@@ -6,8 +6,8 @@
 package Servlets;
 
 import Clases.Articulo;
+import Clases.Usuario;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -36,32 +36,48 @@ public class AgregarCarrito extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         
+        
+        
         int cantidad = Integer.parseInt(request.getParameter("CantidadProducto"));
         int idproducto = Integer.parseInt(request.getParameter("idProducto"));
-        HttpSession sesion = request.getSession(true);
-        ArrayList <Articulo> articulos = sesion.getAttribute("carrito") == null ? new ArrayList<>() : (ArrayList) sesion.getAttribute("carrito");
-        boolean bandera = false;
+        HttpSession sesion = request.getSession(true);        
+        Usuario usu = sesion.getAttribute("Usuario") == null ? null : (Usuario) sesion.getAttribute("Usuario");
         
-        if(articulos.size() > 0)
+        if(usu.getEstado())
         {
-            for(Articulo a : articulos)
+            ArrayList <Articulo> articulos = sesion.getAttribute("carrito") == null ? new ArrayList<>() : (ArrayList) sesion.getAttribute("carrito");
+            boolean bandera = false;
+            if(articulos.size() > 0)
             {
-                if(idproducto == a.getIdProducto())
+                for(Articulo a : articulos)
                 {
-                    a.setCantidad(a.getCantidad() + cantidad);
-                    bandera = true;
-                    break;
+                    if(idproducto == a.getIdProducto())
+                    {
+                        a.setCantidad(a.getCantidad() + cantidad);
+                        bandera = true;
+                        break;
+                    }
                 }
             }
+            if(!bandera)
+            {
+                articulos.add(new Articulo(idproducto, cantidad));
+            }        
+            sesion.setAttribute("carrito", articulos);
+            response.sendRedirect("cart.jsp");
         }
-        if(!bandera)
+        else
         {
-            articulos.add(new Articulo(idproducto, cantidad));
+            if(usu.getId_suscripcion().compareTo("3")==0)
+            {
+                response.sendRedirect("seleccion-suscripcion.jsp");
+            }
+            else
+            {
+                response.sendRedirect("pago-suscripcion.jsp");
+            }
         }
         
-        sesion.setAttribute("carrito", articulos);
-        
-        response.sendRedirect("cart.jsp");
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

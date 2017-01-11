@@ -5,7 +5,8 @@
  */
 package Servlets;
 
-import Modelos.EnviarCorreo;
+import Clases.Usuario;
+import Modelos.Consulta;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
@@ -16,14 +17,15 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author Carlos
  */
-@WebServlet(name = "ManejadorRecuperacion", urlPatterns = {"/ManejadorRecuperacion"})
-public class ManejadorRecuperacion extends HttpServlet {
-
+@WebServlet(name = "Select_Suscripcion", urlPatterns = {"/seleccion"})
+public class Select_Suscripcion extends HttpServlet {
+//seleccion
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -36,30 +38,21 @@ public class ManejadorRecuperacion extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
-        String id = request.getParameter("EditId");
         
-        try (PrintWriter out = response.getWriter()) {
-            //out.println(id);
-            /* TODO output your page here. You may use following sample code. */
-            if(id.compareTo("")==0)
-            {
-                    out.println("<script type=\"text/javascript\">");
-                    out.println("alert('El Campo ID Debe Estar LLeno');");
-                    out.println("location='recuperar.jsp';");
-                    out.println("</script>");
-                    //response.sendRedirect("recuperar.jsp");
-            }
-            else 
-            {
-                EnviarCorreo recuperar = new EnviarCorreo();
-                recuperar.SendMail(id);
-                out.println("<script type=\"text/javascript\">");
-                out.println("alert('Se Envio Password Al Correo Registrado');");
-                out.println("location='index.jsp';");
-                out.println("</script>");
-                //response.sendRedirect("index.html");
-            }
-        }
+        HttpSession sesion = request.getSession(true);   
+        Usuario usu = sesion.getAttribute("Usuario") == null ? null : (Usuario) sesion.getAttribute("Usuario");
+        String suscripcion = request.getParameter("select-suscripcion");
+        String id_usuario = usu.getId_usuario();
+        Consulta consultica = new Consulta();
+        consultica.actualizarSuscripcion(suscripcion, id_usuario);
+        
+        //sesion.invalidate();
+        
+        Usuario usuario;
+        usuario = consultica.Autentificacion(usu.getId_usuario(), usu.getContraseña());
+        sesion.setAttribute("Usuario", usuario);
+        response.sendRedirect("pago-suscripcion.jsp");
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -77,7 +70,7 @@ public class ManejadorRecuperacion extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (SQLException ex) {
-            Logger.getLogger(ManejadorRecuperacion.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Select_Suscripcion.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -95,7 +88,7 @@ public class ManejadorRecuperacion extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (SQLException ex) {
-            Logger.getLogger(ManejadorRecuperacion.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Select_Suscripcion.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

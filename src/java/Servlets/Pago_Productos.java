@@ -5,24 +5,26 @@
  */
 package Servlets;
 
-import Modelos.EnviarCorreo;
+import Clases.Articulo;
+import Clases.Producto;
+import Clases.Usuario;
+import Controladores.ControladorProductos;
+import Modelos.Consulta;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+import javax.servlet.http.HttpSession;
+//pagar_pedido
 /**
  *
  * @author Carlos
  */
-@WebServlet(name = "ManejadorRecuperacion", urlPatterns = {"/ManejadorRecuperacion"})
-public class ManejadorRecuperacion extends HttpServlet {
+@WebServlet(name = "Pago_Productos", urlPatterns = {"/pagar_pedido"})
+public class Pago_Productos extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -34,32 +36,32 @@ public class ManejadorRecuperacion extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, SQLException {
+            throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String id = request.getParameter("EditId");
         
-        try (PrintWriter out = response.getWriter()) {
-            //out.println(id);
-            /* TODO output your page here. You may use following sample code. */
-            if(id.compareTo("")==0)
-            {
-                    out.println("<script type=\"text/javascript\">");
-                    out.println("alert('El Campo ID Debe Estar LLeno');");
-                    out.println("location='recuperar.jsp';");
-                    out.println("</script>");
-                    //response.sendRedirect("recuperar.jsp");
-            }
-            else 
-            {
-                EnviarCorreo recuperar = new EnviarCorreo();
-                recuperar.SendMail(id);
-                out.println("<script type=\"text/javascript\">");
-                out.println("alert('Se Envio Password Al Correo Registrado');");
-                out.println("location='index.jsp';");
-                out.println("</script>");
-                //response.sendRedirect("index.html");
-            }
+        HttpSession sesion = request.getSession(true);
+        ArrayList <Articulo> articulos = sesion.getAttribute("carrito") == null ? null : (ArrayList) sesion.getAttribute("carrito");
+        Usuario usu = sesion.getAttribute("Usuario") == null ? null : (Usuario) sesion.getAttribute("Usuario");
+        
+        ControladorProductos cp = new ControladorProductos();
+        Consulta con = new Consulta();
+        int total = 0;
+        for(Articulo a : articulos)
+        {
+            Producto producto = cp.getProducto(a.getIdProducto());
+            total = total + (a.getCantidad() * producto.getPrecio());
         }
+        con.ingresarFactura(usu.getId_usuario(), total);
+        int factura = con.obtenerUltimaFactura(usu.getId_usuario());
+        for(Articulo a : articulos)
+        {
+            Producto producto = cp.getProducto(a.getIdProducto());
+            con.ingresarCompra(factura, a.getIdProducto(), usu.getId_usuario(), a.getCantidad(), a.getCantidad()*producto.getPrecio());
+        }
+        sesion.setAttribute("carrito", null);
+        response.sendRedirect("Principal.jsp");
+        
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -74,11 +76,7 @@ public class ManejadorRecuperacion extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            processRequest(request, response);
-        } catch (SQLException ex) {
-            Logger.getLogger(ManejadorRecuperacion.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        processRequest(request, response);
     }
 
     /**
@@ -92,11 +90,7 @@ public class ManejadorRecuperacion extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            processRequest(request, response);
-        } catch (SQLException ex) {
-            Logger.getLogger(ManejadorRecuperacion.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        processRequest(request, response);
     }
 
     /**

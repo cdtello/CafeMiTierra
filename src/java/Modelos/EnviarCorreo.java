@@ -53,6 +53,7 @@ public class EnviarCorreo {
             props.put("mail.smtp.auth", "true");
             props.put("mail.smtp.starttls.enable", "true");
             props.put("mail.smtp.host", "smtp.gmail.com");
+            //props.put("mail.smtp.port", "465");
             props.put("mail.smtp.port", "587");
         
             Session session = Session.getInstance(props,
@@ -106,22 +107,19 @@ public class EnviarCorreo {
  
         try {
             String sus = "N/A";
-            if(suscripcion.compareTo("1")==0)
+            if(suscripcion.compareTo("3")==0)
+            {
+                sus = "NINGUNA";
+            }
+            else if(suscripcion.compareTo("1")==0)
             {
                 sus = "PROBADITA";
             }
             else if(suscripcion.compareTo("2")==0)
             {
-                sus = "CASA";
+                sus = "CAFE MI TIERRA";
             }
-            else if(suscripcion.compareTo("3")==0)
-            {
-                sus = "OFICINA";
-            }
-            else if(suscripcion.compareTo("4")==0)
-            {
-                sus = "ESPECIAL";
-            }
+         
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress("cafe.mi.tierra.univalle@gmail.com"));
             message.setRecipients(Message.RecipientType.TO,

@@ -11,7 +11,7 @@
 <div id="space"><br></div>
 <div id="container"> 
 <div id="wb_Form1" style="position:absolute;left:234px;top:197px;width:517px;height:330px;z-index:8;">
-<form method="post" action="ValidaSesion" >
+<form method="post" action="validar" >
 <div id="wb_TextArt1" style="position:absolute;left:22px;top:6px;width:473px;height:104px;z-index:0;">
 <img src="css/images/img0001.png" id="TextArt1" alt="Caf&#233; Mi Tierra" title="Caf&#233; Mi Tierra" style="width:473px;height:104px;"></div>
 <div id="wb_Text1" style="position:absolute;left:230px;top:101px;width:78px;height:20px;z-index:1;text-align:left;">

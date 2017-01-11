@@ -1,15 +1,16 @@
-<%@page import="Clases.Usuario"%>
-<%@page import="Clases.Producto"%>
-<%@page import="Controladores.ControladorProductos"%>
+
 <%@page import="java.text.DecimalFormat"%>
-<%@page import="Clases.Articulo"%>
-<%@page import="java.util.ArrayList"%>
+<%@page import="Modelos.Consulta"%>
+<%@page import="Clases.Suscripcion"%>
+<%@page import="Clases.Usuario"%>
 <!DOCTYPE html>
 <%
     HttpSession sesion = request.getSession(true);
-    ArrayList <Articulo> articulos = sesion.getAttribute("carrito") == null ? null : (ArrayList) sesion.getAttribute("carrito");
-    Usuario usu = sesion.getAttribute("Usuario") == null ? null : (Usuario) sesion.getAttribute("Usuario");
-
+   
+    Usuario usu = sesion.getAttribute("Usuario") == null ? new Usuario() : (Usuario) sesion.getAttribute("Usuario");
+    Consulta consultica = new Consulta();
+    Suscripcion suscripcion = consultica.obtenerSuscripcion(usu.getId_suscripcion());
+    DecimalFormat formatea = new DecimalFormat("###,###.##");
 %>
 <html lang="en">
 <head>
@@ -17,7 +18,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>Revisar</title>
+    <title>Pago Suscripcion</title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/font-awesome.min.css" rel="stylesheet">
     <link href="css/prettyPhoto.css" rel="stylesheet">
@@ -47,7 +48,9 @@
 					</div>
 					<div class="col-sm-6">
 						<div class="social-icons pull-right">
-							
+							<ul class="nav navbar-nav">
+								<li><a href=""><i class="fa fa-facebook"></i></a></li>
+							</ul>
 						</div>
 					</div>
 				</div>
@@ -62,7 +65,7 @@
 	<section id="cart_items">
 		<div class="container">
 			<div class="step-one">
-				<h2 class="heading">Paso 1</h2>
+				<h2 class="heading">Pago De Suscripcion</h2>
 			</div>
 
 			<div class="shopper-informations">
@@ -83,95 +86,108 @@
 							
 						</div>
 					</div>
-					<div class="col-sm-4">
-						<div class="order-message">
-							<p>Orden de envio</p>
-							<textarea name="message"  placeholder="Notas sobre su pedido, Notas especiales para entrega" rows="16"></textarea>
-							
-						</div>	
-					</div>					
+									
 				</div>
 			</div>
 			<div class="review-payment">
 				<h2>Revisar y Pagar</h2>
 			</div>
-
+                        <% if(usu.getId_suscripcion().compareTo("1")==0){ %>                                            
 			<div class="table-responsive cart_info">
+                        <form method="post" action="pagar" target="top">
 				<table class="table table-condensed">
 					<thead>
 						<tr class="cart_menu">
-							<td class="image">Articulo</td>
+							<td class="image">Identificacion</td>
 							<td class="description"></td>
-							<td class="price">Precio</td>
-							<td class="quantity">Cantidad</td>
+							<td class="price">Suscripcion</td>							
 							<td class="total">Total</td>
 							<td></td>
 						</tr>
+                
 					</thead>
 					<tbody>
-                                            
-                                            <%
-                                                DecimalFormat formatea = new DecimalFormat("###,###.##");
-                                                ControladorProductos cp = new ControladorProductos();
-                                                int total = 0;
-                                                if(articulos != null)
-                                                {
-                                                for(Articulo a : articulos)
-                                                {
-                                                    Producto producto = cp.getProducto(a.getIdProducto());
-                                                    total = total + a.getCantidad() * producto.getPrecio();
-                                            %>
-						<tr>
-							<td class="cart_product">
-                                                            <a href=""><img src="<%= producto.getImagen()%>" alt="" width="120" height="120"></a>
-							</td>
-							<td class="cart_description">
-                                                            <h4><a href=""><%= producto.getNombre()%></a></h4>
-                                                            <p>Web ID: <%= producto.getId()%></p>
-							</td>
-							<td class="cart_price">
-                                                            <p>$<%= formatea.format(producto.getPrecio())%></p>
-							</td>
-							<td class="cart_quantity">
-								<div class="cart_quantity_button">
-									<h4 class="heading"><%= a.getCantidad() %></h4>																	
-								</div>
-							</td>
-							<td class="cart_total">
-                                                            <p class="cart_total_price">$<%= formatea.format(Math.round(producto.getPrecio()*a.getCantidad()*100.0)/100.0) %></p>
-							</td>
-							
+                                                <tr >
+							<td class="cart_product"><%= suscripcion.getId_suscripcion() %></td>
+							<td class="cart_description"></td>
+							<td class="cart_price"><%= suscripcion.getNombre() %></td>							
+                                                        <td class="cart_total"><%= formatea.format(suscripcion.getCosto()) %></td>
+							<td></td>
 						</tr>
-                                                <%}}%>
+                                         
                                                 		<td colspan="4">&nbsp;</td>
 							<td colspan="2">
-                                                            <form action="pagar_pedido" method="post" target="top">
 								<table class="table table-condensed total-result">
                                                                     
-									<tr>
-										<td>Subtotal</td>
-										<td>$<%= formatea.format(total) %></td>
-									</tr>
 									
-									<tr class="shipping-cost">
-										<td>Costo Envio</td>
-										<td>$8.500</td>										
-									</tr>
 									<tr>
 										<td>Total</td>
-										<td><span>$<%= formatea.format(total+8500) %></span></td>
-                                                                        
+										<td><span>$<%= formatea.format(suscripcion.getCosto()) %></span></td>
+                                                                                
                                                                                 <input type="submit" class="btn btn-default check_out" id="BtnPagar" name="BtnPagar" value="Pagar">
-                                                                               
+                                                                                
 									</tr>
                                                                     
 								</table>
-                                                            </form>
 							</td>
 					</tbody>
 				</table>
+                        </form>
 			</div>
-		
+                        <% }%>
+                        <% if(usu.getId_suscripcion().compareTo("2")==0){%>
+                        
+                        <div class="table-responsive cart_info">
+                            <form method="post" action="pagar" target="top">
+				<table class="table table-condensed">
+					<thead>
+						<tr class="cart_menu">
+							<td class="image">Identificacion</td>
+							<td class="description"></td>
+							<td class="price">Suscripcion</td>							
+							<td class="total">Periodicidad</td>
+							<td></td>
+						</tr>
+                
+					</thead>
+					<tbody>
+                                                <tr >
+							<td class="cart_product"><%= suscripcion.getId_suscripcion() %></td>
+							<td class="cart_description"></td>
+							<td class="cart_price"><%= suscripcion.getNombre() %></td>							
+                                                        <td class="cart_total">
+                                                            <select name="select-periodicidad" size="1" id="select-periodicidad" >
+                                                                                        <option selected value="1">$20.000      Semanal</option>
+                                                                                        <option value="2">$22.500       Quincenal</option> 
+                                                                                        <option value="3">$25.000       Mensual</option> 
+                                                                                    </select>
+                                                            
+                                                        </td>
+							<td></td>
+						</tr>
+                                         
+                                                		<td colspan="4">&nbsp;</td>
+							<td colspan="2">
+								<table class="table table-condensed total-result">
+                                                                    
+									
+									<tr>
+										
+                                                                                <td><span>
+                                                                                    
+                                                                                        
+                                                                                </span></td>
+                                                                               
+                                                                                <input type="submit" class="btn btn-default check_out" id="BtnPagar" name="BtnPagar" value="Pagar">
+									</tr>
+                                                                    
+								</table>
+							</td>
+					</tbody>
+				</table>
+                        </form>
+			</div>
+                        <% }%>
 		</div>
 	</section> <!--/#cart_items-->
 <footer id="footer"><!--Footer-->

@@ -5,8 +5,8 @@
  */
 package Servlets;
 
-import Modelos.Consulta;
 import Clases.Usuario;
+import Modelos.Consulta;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
@@ -18,12 +18,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
+//validar
 /**
  *
  * @author Carlos
  */
-@WebServlet(name = "ValidaSesion", urlPatterns = {"/ValidaSesion"})
+@WebServlet(name = "ValidaSesion", urlPatterns = {"/validar"})
 public class ValidaSesion extends HttpServlet {
 
     /**
@@ -38,18 +38,51 @@ public class ValidaSesion extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet ValidaSesion</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet ValidaSesion at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+        
+        String Usuario = request.getParameter("EditUsuario");
+        String Password = request.getParameter("EditPass");
+                try (PrintWriter out = response.getWriter()) {
+            Usuario u;
+            Consulta consultica = new Consulta(); 
+            u = consultica.Autentificacion(Usuario, Password);
+
+            
+            if (u.getId_usuario().compareTo("")==0 || (u.getContraseña().compareTo(""))==0)
+            {
+                out.println("<script type=\"text/javascript\">");
+                out.println("alert('Acceso Denegado');");
+                out.println("location='index.jsp';");
+                out.println("</script>");
+            }
+            
+            else if (u.getId_usuario().compareTo(Usuario)==0 && (u.getContraseña().compareTo(Password))==0)
+            {
+                HttpSession sesion = request.getSession();
+                sesion.setAttribute("Usuario", u);   
+                if(u.getEstado()==false && u.getId_suscripcion().compareTo("3")!=0 )
+                {
+                    response.sendRedirect("pago-suscripcion.jsp");
+                }
+                else 
+                {
+                    response.sendRedirect("Principal.jsp");                
+                }
+                
+
+            }
+
+            else
+            {
+                out.println("<script type=\"text/javascript\">");
+                out.println("alert('Acceso Denegado');");
+                out.println("location='index.jsp';");
+                out.println("</script>");
+                //response.sendRedirect("index.html");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ValidaSesion.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -78,34 +111,7 @@ public class ValidaSesion extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        String Usuario = request.getParameter("EditUsuario");
-        String Password = request.getParameter("EditPass");
-        
-        
-        try (PrintWriter out = response.getWriter()) {
-            Usuario u;
-            Consulta consultica = new Consulta(); 
-            u = consultica.Autentificacion(Usuario, Password);
-            
-            if (u.getId().compareTo(Usuario)==0 && (u.getContraseña().compareTo(Password))==0)
-            {
-                HttpSession sesion = request.getSession();
-                sesion.setAttribute("Usuario", u);
-                response.sendRedirect("Principal.jsp");
-            }
-
-            else
-            {
-                out.println("<script type=\"text/javascript\">");
-                out.println("alert('Acceso Denegado');");
-                out.println("location='Login.jsp';");
-                out.println("</script>");
-                //response.sendRedirect("index.html");
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(ValidaSesion.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        processRequest(request, response);
     }
 
     /**

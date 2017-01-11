@@ -1,5 +1,9 @@
+<%@page import="Clases.Usuario"%>
 <!doctype html>
-
+<%
+    HttpSession sesion = request.getSession(true);
+    Usuario usu = sesion.getAttribute("Usuario") == null ? null : (Usuario) sesion.getAttribute("Usuario");
+%>
 <head>
 <meta charset="utf-8">
 <title>Master</title>
@@ -17,20 +21,21 @@
 <img src="css/images/cafe-col.png" id="Image1" alt=""></div>
 <div id="wb_TextArt1" style="position:absolute;left:148px;top:12px;width:469px;height:52px;z-index:1;">
 <img src="css/images/img0004.png" id="TextArt1" alt="Caf&#233; Mi Tierra" title="Caf&#233; Mi Tierra" style="width:469px;height:52px;"></div>
-<div id="wb_CssMenu1" style="position:absolute;left:625px;top:80px;width:369px;height:30px;text-align:center;z-index:2;">
-    
-
-    
-<ul>
-<li class="firstmain"><a href="./productos.jsp" target="ventana" title="index">Productos</a>
-</li>
-<li><a href="./cart.jsp" target="ventana" title="productos">Carrito</a>
-</li>
-<li><a href="./ranking.jsp" target="ventana" title="ranking">Ranking</a>
-</li>
-<li><a href="./contactenos.jsp" target="ventana" title="contactenos">Contactenos</a>
-</li>
-</ul>
+<div id="wb_CssMenu1" style="position:absolute;left:400px;top:80px;width:600px;height:30px;text-align:center;z-index:2;">
+    <ul>
+        <li class="firstmain">
+            <a href="./productos.jsp" target="ventana" title="index">Productos</a>
+        </li>
+        <li>
+            <a href="./cart.jsp" target="ventana" title="productos">Carrito</a>
+        </li>
+        <li>
+            <a href="./ranking.jsp" target="ventana" title="ranking">Ranking</a>
+        </li>
+        <li>
+            <a href="./calificar_compras.jsp" target="ventana" title="calificar">Calificar Compras</a>
+        </li>
+    </ul>
 </div>
     <div id="NOM" style="position:absolute;left:800px;top:5px;width:369px;height:30px;text-align:center;z-index:2;">
     
@@ -40,7 +45,7 @@
         <li>
             <div id="wb_Image1" style="position:absolute;left:160px;top:0px;width:30px;height:30px;z-index:0;">
             <jsp:useBean id="Usuario" scope="session" class="Clases.Usuario" />
-            <h6><FONT COLOR="white"><jsp:getProperty name="Usuario" property="usuario" /></FONT></h6>
+            <h6><FONT COLOR="white"><%= usu.getNombres() %></FONT></h6>
             </div> 
         </li>
         <li>

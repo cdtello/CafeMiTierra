@@ -1,12 +1,19 @@
+<%@page import="java.util.ArrayList"%>
+<%@page import="Clases.Ranking"%>
+<%@page import="Modelos.Consulta"%>
 <%@page import="java.text.DecimalFormat"%>
 <%@page import="Controladores.ControladorProductos"%>
 <%@page import="Clases.Producto"%>
 <!DOCTYPE html>
 
 <%
+    
+    Consulta consultica = new Consulta();
     int id = Integer.parseInt(request.getParameter("id"));
     Producto producto = new ControladorProductos().getProducto(id);
     DecimalFormat formatea = new DecimalFormat("###,###.##");
+    int calificacion = consultica.obtenerPromedioRanking(producto.getId());
+    ArrayList <Ranking> ranking = consultica.obtenerRankingProducto(producto.getId());
 %>
 <html lang="en">
 <head>
@@ -67,7 +74,24 @@
                                                                 </form>        
 								<p><b>Disponibilidad:</b> En Stock</p>
 								<p><b>Condicion:</b> Nuevo</p>
-								
+								<p>
+                                                                    <b>Calificacion:</b>
+                                                                    <% if(calificacion == 1) {%>
+                                                                    <img src="css/images/calificacion/1estrellas.png" alt="" width="100" height="30"/>
+                                                                    <% } %>
+                                                                    <% if(calificacion == 2) {%>
+                                                                    <img src="css/images/calificacion/2estrellas.png" alt="" width="100" height="30"/>
+                                                                    <% } %>
+                                                                    <% if(calificacion == 3) {%>
+                                                                    <img src="css/images/calificacion/3estrellas.png" alt="" width="100" height="30"/>
+                                                                    <% } %>
+                                                                    <% if(calificacion == 4) {%>
+                                                                    <img src="css/images/calificacion/4estrellas.png" alt="" width="100" height="30"/>
+                                                                    <% } %>
+                                                                    <% if(calificacion == 5) {%>
+                                                                    <img src="css/images/calificacion/5estrellas.png" alt="" width="100" height="30"/>
+                                                                    <% } %>
+                                                                </p>
 							</div><!--/product-information-->
 						</div>
 					</div><!--/product-details-->					
@@ -83,18 +107,73 @@
 								<p>Detalles del producto.</p>						
 							</div>						
 							<div class="tab-pane fade active in" id="comentarios" >
-								<div class="col-sm-12">
-                                                                	
-									<p><b>Escribe tus Comentarios</b></p>
-									
-									<form action="#">
-										<textarea name="" ></textarea>
-										
-										<button type="button" class="btn btn-default pull-right">
-											OK
-										</button>
-									</form>
-								</div>
+	<section id="cart_items">
+		<div class="container">			
+			<div class="table-responsive cart_info">
+				<table class="table table-condensed">
+					<thead>
+						<tr class="cart_menu">
+							<td class="image">Usuario</td>
+							<td class="description">Comentario</td>	                                                        
+							<td class="total">Calificacion</td>
+							<td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+						</tr>
+					</thead>
+                                       
+                                        <tbody> 
+                                            <%    
+                                                for(Ranking a : ranking)
+                                                {
+                                                                                                      
+                                            %>
+                                        <form action="calificacion" method="post">
+						<tr>
+							<td class="cart_product">
+                                                            <%= a.getId_usuario() %>
+							</td>
+							<td class="cart_price">
+                                                            <%= a.getComentario() %>
+							</td>
+                                                         
+							<td class="cart_price">
+                                                            <% if(a.getCalificacion() == 1) {%>
+                                                                <img src="css/images/calificacion/1estrellas.png" alt="" width="100" height="30"/>
+                                                            <% } %>
+                                                            <% if(a.getCalificacion() == 2) {%>
+                                                                <img src="css/images/calificacion/2estrellas.png" alt="" width="100" height="30"/>
+                                                            <% } %>
+                                                            <% if(a.getCalificacion() == 3) {%>
+                                                                <img src="css/images/calificacion/3estrellas.png" alt="" width="100" height="30"/>
+                                                            <% } %>
+                                                            <% if(a.getCalificacion() == 4) {%>
+                                                                <img src="css/images/calificacion/4estrellas.png" alt="" width="100" height="30"/>
+                                                            <% } %>
+                                                            <% if(a.getCalificacion() == 5) {%>
+                                                                <img src="css/images/calificacion/5estrellas.png" alt="" width="100" height="30"/>
+                                                            <% } %>                                                          
+							</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        
+						</tr>                                                
+                                                		
+					</form>
+                                        <% 
+                                           }
+                                        %>
+					</tbody>
+				</table>
+			</div>
+		
+		</div>
+	</section>
 							</div>							
 						</div>
 					</div><!--/category-tab-->	

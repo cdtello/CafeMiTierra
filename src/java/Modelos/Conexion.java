@@ -22,12 +22,12 @@ public class Conexion {
     private Connection conexion;
     public java.sql.Connection con;
     public Conexion(){
-        url = "jdbc:postgresql://localhost:5432/Proyecto";
-        usuario="postgres";
-        pwd ="abcd1234";
-        //url = "jdbc:postgresql://172.16.7.114:5432/postgres";
-        //usuario="webadmin";
-        //pwd ="QDScnk12333";
+        //url = "jdbc:postgresql://localhost:5432/Proyecto";
+        //usuario="postgres";
+        //pwd ="abcd1234";
+        url = "jdbc:postgresql://172.16.7.114:5432/postgres";
+        usuario="webadmin";
+        pwd ="QDScnk12333";
     }
     
     public Connection conectarABD(){

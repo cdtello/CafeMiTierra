@@ -85,7 +85,7 @@ public class ManejadorRegistro extends HttpServlet {
                 reg.Ingreso(usuario,pass,nombre,apellido,id,correo,direccion,domicilio,suscripcion);
                 out.println("<script type=\"text/javascript\">");
                 out.println("alert('Registro Correcto');");
-                out.println("location='Login.jsp';");
+                out.println("location='index.jsp';");
                 out.println("</script>");
                 correito.emailRegistro(usuario, correo, pass, suscripcion);
                 

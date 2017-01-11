@@ -1,13 +1,15 @@
 <%@page import="Clases.Producto"%>
-<%@page import="Clases.Puntuacion"%>
-<%@page import="java.util.ArrayList"%>
-<%@page import="Modelos.Consulta"%>
 <%@page import="Modelos.ModeloProducto"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="Clases.Usuario"%>
+<%@page import="Clases.Compras"%>
+<%@page import="Modelos.Consulta"%>
 <!DOCTYPE html>
 <%
-    
+    HttpSession sesion = request.getSession(true);
+    Usuario usu = sesion.getAttribute("Usuario") == null ? null : (Usuario) sesion.getAttribute("Usuario");
     Consulta consultica = new Consulta();
-    ArrayList <Puntuacion>  puntuaciones = consultica.obtenerRanking();
+    ArrayList <Compras>  compras = consultica.comprasNoCalificadas(usu.getId_usuario());
 %>
 <html lang="en">
 <head>
@@ -60,7 +62,7 @@
 	<section id="cart_items">
 		<div class="container">
 			<div class="step-one">
-				<h2 class="heading">Ranking Productos</h2>
+				<h2 class="heading">Calificar Productos Adquiridos</h2>
 			</div>
 
 
@@ -68,8 +70,8 @@
 				<table class="table table-condensed">
 					<thead>
 						<tr class="cart_menu">
-							<td class="image">Web ID</td>
-							<td class="description">Articulo</td>	
+							<td class="image">Articulo</td>
+							<td class="description">Comentario</td>	
                                                         <td></td>
                                                         
 							<td class="total">Calificacion</td>
@@ -82,7 +84,7 @@
                                             <%
                                                 ModeloProducto mp = new ModeloProducto();
                                                 int boton = 0;
-                                                for(Puntuacion a : puntuaciones)
+                                                for(Compras a : compras)
                                                 {
                                                    Producto producto = mp.getProducto(a.getId_producto());
                                                     
@@ -90,31 +92,25 @@
                                         <form action="calificacion" method="post">
 						<tr>
 							<td class="cart_product">
-                                                            <%= a.getId_producto() %>
+                                                            <a href=""><img src="<%= producto.getImagen() %>" alt="" width="120" height="120"></a>
 							</td>
 							<td class="cart_price">
-                                                            <img src="<%= producto.getImagen() %>" alt="" width="120" height="120">
+                                                            <textarea name="comentario" id="comentario" placeholder="Comentarios..." rows="6"></textarea>
 							</td>
                                                         <td></td>                                                        
 							<td class="cart_price">
-                                                            <% if(a.getCalificacion() == 1) {%>
-                                                                <img src="css/images/calificacion/1estrellas.png" alt="" width="100" height="30"/>
-                                                            <% } %>
-                                                            <% if(a.getCalificacion() == 2) {%>
-                                                                <img src="css/images/calificacion/2estrellas.png" alt="" width="100" height="30"/>
-                                                            <% } %>
-                                                            <% if(a.getCalificacion() == 3) {%>
-                                                                <img src="css/images/calificacion/3estrellas.png" alt="" width="100" height="30"/>
-                                                            <% } %>
-                                                            <% if(a.getCalificacion() == 4) {%>
-                                                                <img src="css/images/calificacion/4estrellas.png" alt="" width="100" height="30"/>
-                                                            <% } %>
-                                                            <% if(a.getCalificacion() == 5) {%>
-                                                                <img src="css/images/calificacion/5estrellas.png" alt="" width="100" height="30"/>
-                                                            <% } %>                                                          
+                                                            <select name="seleccion_calificacion" size="1" id="ComboSuscripcion" >
+                                                                <option selected value="1">Muy Malo</option>
+                                                                <option value="2">Malo</option>
+                                                                <option value="3">Regular</option>
+                                                                <option value="4">Bueno</option>
+                                                                <option value="5">Muy Bueno</option>
+                                                            </select> 
 							</td>
                                                         <td>
-                                                            
+                                                            <input type="submit" class="btn btn-default check_out" id="BtnCalificar<%= boton%>" name="BtnCalificar<%= boton%>" value="Calificar"> 
+                                                            <input type="hidden" name="producto_id" id="producto_id" value="<%= producto.getId() %>">
+                                                            <input type="hidden" name="compra_id" id="compra_id" value="<%= a.getId_compra() %>">
                                                         </td>
 						</tr>                                                
                                                 		
