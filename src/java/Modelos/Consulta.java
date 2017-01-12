@@ -258,6 +258,33 @@ public class Consulta extends Conexion{
         
         return compras;
     }
+    public ArrayList <Compras> comprasPorUsuario(String id_usuario){
+        ArrayList <Compras> compras = new ArrayList();
+        
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+        
+        try{
+            String sql = "select * from compras\n" +
+                         "where id_usuario = '"+id_usuario+"'";
+            pst = conectarABD().prepareCall(sql);
+            rs = pst.executeQuery();
+            while(rs.next())
+            {
+                compras.add(new Compras(rs.getInt("id_compra"), rs.getInt("id_factura"), rs.getInt("id_producto"), rs.getString("id_usuario"), rs.getInt("cantidad"), rs.getInt("total"), rs.getBoolean("estado")));
+            }
+        }catch(Exception e){}
+        finally{
+            try{
+                if(rs != null) rs.close();
+                if(pst != null) pst.close();
+                if(conectarABD() != null) conectarABD().close();
+            }catch(Exception e){}
+        }
+        
+        return compras;
+    }
+    
 
     public ArrayList <Ranking> obtenerRankingProducto(int id_producto){
         ArrayList <Ranking> ranking = new ArrayList();
@@ -360,6 +387,32 @@ public class Consulta extends Conexion{
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+    }
+        public String obtenerFechaFactura(int id_factura){
+        String fecha = "";
+        
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+        
+        try{
+            String sql = "select * from facturas\n" +
+                            "where id_factura = "+id_factura+"";
+            pst = conectarABD().prepareCall(sql);
+            rs = pst.executeQuery();
+            while(rs.next())
+            {
+                fecha =  rs.getString("fecha");
+            }
+        }catch(Exception e){}
+        finally{
+            try{
+                if(rs != null) rs.close();
+                if(pst != null) pst.close();
+                if(conectarABD() != null) conectarABD().close();
+            }catch(Exception e){}
+        }
+        
+        return fecha;
     }
     
        public static void main(String[] args){

@@ -35,6 +35,9 @@
         <li>
             <a href="./calificar_compras.jsp" target="ventana" title="calificar">Calificar Compras</a>
         </li>
+        <li>
+            <a href="./bitacora.jsp" target="ventana" title="calificar">Bitacora</a>
+        </li>
     </ul>
 </div>
     <div id="NOM" style="position:absolute;left:800px;top:5px;width:369px;height:30px;text-align:center;z-index:2;">
