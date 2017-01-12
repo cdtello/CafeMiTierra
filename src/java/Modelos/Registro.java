@@ -35,13 +35,13 @@ public class Registro extends Conexion{
         //Statement.executeQuery(Consulta);
         conectar.cerrarConexion(con);
     }
-    public void IngresoProductos (String id, String nom, String descri, String img, String costo, String precio, String descu, String cant, String id_u, String id_tip, String id_pres, String id_reg, String id_fin, String id_var, String id_perfil, String id_cos) throws SQLException
+    public void IngresoProductos (String id_producto, String nombre, String descripcion, String imagen, String precio) throws SQLException
     {
         Connection con = conectar.conectarABD();
         instruccion = con.createStatement();
         
-        String Consulta = "select IngresarProductos("+id+","+"'"+nom+"'"+","+"'"+descri+"'"+","+"'"+img+"'"+","+costo+","+precio+","+descu+","
-               +cant+","+"'"+id_u+"'"+","+"'"+id_tip+"'"+","+"'"+id_pres+"'"+","+"'"+id_reg+"'"+","+id_fin+","+"'"+id_var+"'"+","+"'"+id_perfil+"'"+","+"'"+id_cos+"'"+")";
+        String Consulta = "insert into productos(id_producto, nombre, descripcion, imagen, precio, fecha_creacion, estado)\n" +
+                          "values ("+id_producto+", '"+nombre+"', '"+descripcion+"', 'css/images/productos/"+imagen+"', "+precio+", now(), true)";
         instruccion.execute(Consulta);
         //Statement.executeQuery(Consulta);
         conectar.cerrarConexion(con);

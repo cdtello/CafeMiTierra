@@ -38,20 +38,19 @@ public class ManejadorCatalogo extends HttpServlet {
             throws ServletException, IOException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
         
-        String id = request.getParameter("EditIdProducto");
+        String id_producto = request.getParameter("EditIdProducto");
         String nombre = request.getParameter("EditNombreProducto");
         String precio = request.getParameter("EditPrecioProducto");
         String cantidad = request.getParameter("EditCantidadProducto");
         String costo = request.getParameter("EditCostoProducto");
         String descuento = request.getParameter("EditDescuentoProducto");
-        String finca = request.getParameter("EditFinca");
+        String id_finca = request.getParameter("EditFinca");
         String imagen = request.getParameter("Ruta");
-        String tipo = request.getParameter("SeleccionTipo");
-        String region = request.getParameter("SeleccionRegion");
-        String variedad = request.getParameter("SeleccionVariedad");
-        String cosecha = request.getParameter("SeleccionCosecha");
-        String presentacion = request.getParameter("SeleccionPresentacion");
-        String perfil = request.getParameter("SeleccionPerfil");
+        String id_categoria = request.getParameter("SeleccionTipo");
+        String id_region = request.getParameter("SeleccionRegion");
+        String id_variedad = request.getParameter("SeleccionVariedad");
+        String id_cosecha = request.getParameter("SeleccionCosecha");       
+        String id_perfil = request.getParameter("SeleccionPerfil");
         String descripcion = request.getParameter("AreaDescripcion");
          
         
@@ -66,9 +65,9 @@ public class ManejadorCatalogo extends HttpServlet {
            out.println(direccion);
            out.println(domicilio);
            out.println(suscripcion);*/
-            if((id.compareTo("")==0   )||(nombre.compareTo("")==0   )||(precio.compareTo("")==0)||(cantidad.compareTo("")==0   )||(costo.compareTo("")==0   )
-                    ||(descuento.compareTo("")==0   )||(finca.compareTo("")==0)||(imagen.compareTo("")==0)||(tipo.compareTo("")==0 || (region.compareTo("")==0))
-                    ||(variedad.compareTo("")==0   )||(cosecha.compareTo("")==0)||(presentacion.compareTo("")==0)||(perfil.compareTo("")==0 || (descripcion.compareTo("")==0)))
+            if((id_producto.compareTo("")==0   )||(nombre.compareTo("")==0   )||(precio.compareTo("")==0)||(cantidad.compareTo("")==0   )||(costo.compareTo("")==0   )
+                    ||(descuento.compareTo("")==0   )||(id_finca.compareTo("")==0)||(imagen.compareTo("")==0)||(id_categoria.compareTo("")==0 || (id_region.compareTo("")==0))
+                    ||(id_variedad.compareTo("")==0   )||(id_cosecha.compareTo("")==0)||(id_perfil.compareTo("")==0 || (descripcion.compareTo("")==0)))
             {
                 out.println("<script type=\"text/javascript\">");
                 out.println("alert('Todos Los Campos Deben Estar LLenos');");
@@ -82,10 +81,10 @@ public class ManejadorCatalogo extends HttpServlet {
                 
                 Registro reg = new Registro();
                 //EnviarCorreo correito = new EnviarCorreo();
-                reg.IngresoProductos(id, nombre, descripcion, imagen, costo, precio, descuento, cantidad, "ctello", tipo, presentacion, region, "0", variedad, perfil, cosecha);
+                reg.IngresoProductos (id_producto, nombre, descripcion, imagen, precio);
                 out.println("<script type=\"text/javascript\">");
                 out.println("alert('Registro Correcto');");
-                out.println("location='catalogo.jsp';");
+                out.println("location='crear_productos.jsp';");
                 out.println("</script>");
                 //correito.emailRegistro(usuario, correo, pass, suscripcion);
                 

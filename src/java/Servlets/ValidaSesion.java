@@ -57,9 +57,14 @@ public class ValidaSesion extends HttpServlet {
             
             else if (u.getId_usuario().compareTo(Usuario)==0 && (u.getContraseña().compareTo(Password))==0)
             {
+                consultica.actualizarFechaUsuarios(u.getId_usuario());
                 HttpSession sesion = request.getSession();
-                sesion.setAttribute("Usuario", u);   
-                if(u.getEstado()==false && u.getId_suscripcion().compareTo("3")!=0 )
+                sesion.setAttribute("Usuario", u);  
+                if  (u.getId_suscripcion().compareTo("0")==0) 
+                {
+                    response.sendRedirect("PrincipalAdmin.jsp");
+                }
+                else if(u.getEstado()==false && u.getId_suscripcion().compareTo("3")!=0 )
                 {
                     response.sendRedirect("pago-suscripcion.jsp");
                 }

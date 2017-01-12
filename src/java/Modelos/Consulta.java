@@ -312,10 +312,48 @@ public class Consulta extends Conexion{
         
         return puntuacion;
     }
+    public ArrayList <Usuario> obtenerUsuarios(){
+        ArrayList <Usuario> usuarios = new ArrayList();
+        
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+        
+        try{
+            String sql = "select * from usuarios";
+            pst = conectarABD().prepareCall(sql);
+            rs = pst.executeQuery();
+            while(rs.next())
+            {  
+                usuarios.add(new Usuario(rs.getString("id_suscripcion"),rs.getString("id_periodicidad"),rs.getString("id_usuario"),rs.getString("id_identificacion"),
+                rs.getString("contraseña"),rs.getString("nombres"),rs.getString("apellidos"),rs.getString("correo"),rs.getString("direccion"),
+                rs.getString("domicilio"),rs.getBoolean("estado"),rs.getString("fecha_creacion"),rs.getString("ultimo_ingreso")));
+            }
+        }catch(Exception e){}
+        finally{
+            try{
+                if(rs != null) rs.close();
+                if(pst != null) pst.close();
+                if(conectarABD() != null) conectarABD().close();
+            }catch(Exception e){}
+        }
+        return usuarios;
+    }
+    
     public void actualizarEstadoCompras(int id_compra) {
         try {
             String createTable = "update compras set estado = true\n" +
                                  "where id_compra = "+id_compra+"";
+            Statement statement = conectarABD().createStatement();
+            boolean rs = statement.execute(createTable);
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+    public void actualizarFechaUsuarios(String id_usuario) {
+        try {
+            String createTable = "update usuarios set ultimo_ingreso = now()\n" +
+                                 "where id_usuario = '"+id_usuario+"'";
             Statement statement = conectarABD().createStatement();
             boolean rs = statement.execute(createTable);
 

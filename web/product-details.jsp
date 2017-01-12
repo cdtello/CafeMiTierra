@@ -104,7 +104,7 @@
 						</div>
 						<div class="tab-content">
 							<div class="tab-pane fade" id="detalles" >
-								<p>Detalles del producto.</p>						
+								<p><%= producto.getDescripcion() %></p>						
 							</div>						
 							<div class="tab-pane fade active in" id="comentarios" >
 	<section id="cart_items">
